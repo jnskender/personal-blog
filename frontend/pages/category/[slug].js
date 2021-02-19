@@ -1,6 +1,5 @@
 import Articles from "../../components/articles";
 import { fetchAPI } from "../../lib/api";
-import Layout from "../../components/layout";
 import Seo from "../../components/seo";
 
 const Category = ({ category, categories }) => {
@@ -10,7 +9,7 @@ const Category = ({ category, categories }) => {
   };
 
   return (
-    <Layout categories={categories}>
+    <>
       <Seo seo={seo} />
       <div className="uk-section">
         <div className="uk-container uk-container-large">
@@ -18,7 +17,7 @@ const Category = ({ category, categories }) => {
           <Articles articles={category.articles} />
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

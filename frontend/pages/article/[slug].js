@@ -1,10 +1,10 @@
 import ReactMarkdown from "react-markdown";
 import Moment from "react-moment";
 import { fetchAPI } from "../../lib/api";
-import Layout from "../../components/layout";
 import Image from "../../components/image";
 import Seo from "../../components/seo";
 import { getStrapiMedia } from "../../lib/media";
+import styled from "styled-components";
 
 const Article = ({ article, categories }) => {
   const imageUrl = getStrapiMedia(article.image);
@@ -16,8 +16,10 @@ const Article = ({ article, categories }) => {
     article: true,
   };
 
+  const Wrapper = styled.div``;
+
   return (
-    <Layout categories={categories}>
+    <Wrapper>
       <Seo seo={seo} />
       <div
         id="banner"
@@ -28,35 +30,27 @@ const Article = ({ article, categories }) => {
       >
         <h1>{article.title}</h1>
       </div>
-      <div className="uk-section">
-        <div className="uk-container uk-container-small">
-          <ReactMarkdown source={article.content} escapeHtml={false} />
-          <hr className="uk-divider-small" />
-          <div className="uk-grid-small uk-flex-left" data-uk-grid="true">
-            <div>
-              {article.author.picture && (
-                <Image
-                  image={article.author.picture}
-                  style={{
-                    position: "static",
-                    borderRadius: "50%",
-                    height: 30,
-                  }}
-                />
-              )}
-            </div>
-            <div className="uk-width-expand">
-              <p className="uk-margin-remove-bottom">
-                By {article.author.name}
-              </p>
-              <p className="uk-text-meta uk-margin-remove-top">
-                <Moment format="MMM Do YYYY">{article.published_at}</Moment>
-              </p>
-            </div>
-          </div>
-        </div>
+
+      <ReactMarkdown source={article.content} escapeHtml={false} />
+
+      <div>
+        {article.author.picture && (
+          <Image
+            image={article.author.picture}
+            style={{
+              position: "static",
+              borderRadius: "50%",
+              height: 30,
+            }}
+          />
+        )}
       </div>
-    </Layout>
+
+      <p>By {article.author.name}</p>
+      <p>
+        <Moment format="MMM Do YYYY">{article.published_at}</Moment>
+      </p>
+    </Wrapper>
   );
 };
 

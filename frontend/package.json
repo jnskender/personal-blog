@@ -11,18 +11,22 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@svgr/webpack": "^5.5.0",
     "moment": "^2.24.0",
     "next": "^9.5.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-feather": "^2.0.9",
     "react-markdown": "^4.2.2",
-    "react-moment": "^0.9.6"
+    "react-moment": "^0.9.6",
+    "styled-components": "^5.2.1"
   },
   "license": "MIT",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "2.x",
     "@typescript-eslint/parser": "2.x",
     "babel-eslint": "10.x",
+    "babel-plugin-styled-components": "^1.12.0",
     "eslint": "6.x",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-react-app": "^5.2.1",

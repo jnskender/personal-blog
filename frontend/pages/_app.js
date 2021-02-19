@@ -1,35 +1,38 @@
+import { useState, createContext } from "react";
 import App from "next/app";
 import Head from "next/head";
-import "../assets/css/style.css";
-import { createContext } from "react";
+import { ThemeProvider } from "styled-components";
 import { getStrapiMedia } from "../lib/media";
 import { fetchAPI } from "../lib/api";
-
+import Layout from "../components/layout";
+import GlobalStyles from "../styles/GlobalStyles";
+import { PalletteContext } from "../context/pallette-context";
 // Store Strapi Global object in context
+import themes from "../theme/themes";
+
 export const GlobalContext = createContext({});
 
 const MyApp = ({ Component, pageProps }) => {
-  const { global } = pageProps;
+  const { global, categories } = pageProps;
+  const [pallette, setPallette] = useState("green");
+  const value = { pallette, setPallette };
+  const theme = themes.find((t) => t.name === pallette);
 
   return (
     <>
       <Head>
         <link rel="shortcut icon" href={getStrapiMedia(global.favicon)} />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Staatliches"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/uikit@3.2.3/dist/css/uikit.min.css"
-        />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js" />
-        <script src="https://cdn.jsdelivr.net/npm/uikit@3.2.3/dist/js/uikit-icons.min.js" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.js" />
       </Head>
-      <GlobalContext.Provider value={global}>
-        <Component {...pageProps} />
-      </GlobalContext.Provider>
+      <PalletteContext.Provider value={value}>
+        <ThemeProvider theme={theme}>
+          <GlobalContext.Provider value={global}>
+            <GlobalStyles />
+            <Layout categories={categories}>
+              <Component {...pageProps} />
+            </Layout>
+          </GlobalContext.Provider>
+        </ThemeProvider>
+      </PalletteContext.Provider>
     </>
   );
 };
@@ -42,9 +45,22 @@ MyApp.getInitialProps = async (ctx) => {
   // Calls page's `getInitialProps` and fills `appProps.pageProps`
   const appProps = await App.getInitialProps(ctx);
   // Fetch global site settings from Strapi
-  const global = await fetchAPI("/global");
+  const [global, categories] = await Promise.all([
+    fetchAPI("/global"),
+    fetchAPI("/categories"),
+  ]);
+
   // Pass the data to our page via props
-  return { ...appProps, pageProps: { global } };
+  return { ...appProps, pageProps: { global, categories } };
 };
+
+export async function getStaticProps({ params }) {
+  const categories = await fetchAPI("/categories");
+
+  return {
+    props: { categories },
+    revalidate: 1,
+  };
+}
 
 export default MyApp;
